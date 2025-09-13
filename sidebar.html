@@ -15,7 +15,7 @@
           -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
           "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
           sans-serif;
-        padding: 16px;
+        padding: 8px;
         background-color: #ffffff;
         color: #0f172a;
       }
@@ -24,7 +24,7 @@
       .container {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 8px;
       }
 
       /* Accordion styles */
@@ -32,12 +32,12 @@
         border: 1px solid #e2e8f0;
         border-radius: 6px;
         overflow: hidden;
-        margin-bottom: 16px;
+        margin-bottom: 8px;
       }
 
       .accordion-header {
         background-color: #f8fafc;
-        padding: 12px 16px;
+        padding: 8px 12px;
         cursor: pointer;
         display: flex;
         justify-content: space-between;
@@ -63,7 +63,7 @@
       }
 
       .accordion-content {
-        padding: 16px;
+        padding: 12px;
         display: none;
       }
 
@@ -79,7 +79,7 @@
       .input-group {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
       }
 
       .label {
@@ -90,11 +90,11 @@
 
       .textarea {
         width: 100%;
-        min-height: 120px;
-        padding: 8px 12px;
+        min-height: 100px;
+        padding: 6px 10px;
         font-size: 14px;
         font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
-        line-height: 1.5;
+        line-height: 1.4;
         color: #0f172a;
         background-color: #ffffff;
         border: 1px solid #e2e8f0;
@@ -122,7 +122,7 @@
         background-color: #f8fafc;
         border: 1px solid #e2e8f0;
         border-radius: 6px;
-        padding: 16px;
+        padding: 12px;
         display: none;
       }
 
@@ -134,7 +134,7 @@
         font-size: 12px;
         font-weight: 600;
         color: #64748b;
-        margin-bottom: 12px;
+        margin-bottom: 8px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -151,7 +151,7 @@
       .replacement-content {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 8px;
       }
 
       .replacement-item {
@@ -170,7 +170,7 @@
         font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
         font-size: 14px;
         background-color: #ffffff;
-        padding: 8px;
+        padding: 6px;
         border-radius: 4px;
         border: 1px solid #e2e8f0;
         word-break: break-all;
@@ -191,7 +191,7 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-top: 8px;
+        margin-top: 6px;
       }
 
       .toggle {
@@ -259,8 +259,8 @@
         white-space: nowrap;
         font-size: 14px;
         font-weight: 500;
-        height: 36px;
-        padding: 8px 16px;
+        height: 32px;
+        padding: 6px 12px;
         border-radius: 6px;
         border: none;
         cursor: pointer;
@@ -317,7 +317,7 @@
 
       /* Message styles */
       .message {
-        padding: 12px;
+        padding: 8px;
         border-radius: 6px;
         font-size: 14px;
       }
@@ -368,7 +368,7 @@
       }
 
       .rule-item {
-        padding: 8px 12px;
+        padding: 6px 10px;
         border-bottom: 1px solid #e2e8f0;
         font-size: 13px;
         font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
@@ -411,6 +411,24 @@
   </head>
   <body>
     <div class="container">
+      <!-- Top Buttons -->
+      <div class="controls" style="margin-bottom: 8px">
+        <button
+          id="yankAllButton"
+          class="button primary"
+          onclick="copyAllDocumentText()"
+        >
+          Yank All
+        </button>
+        <button
+          id="instructionButton"
+          class="button secondary"
+          onclick="showInstructions()"
+        >
+          Instruction
+        </button>
+      </div>
+
       <div class="accordion active" id="rulesAccordion">
         <div class="accordion-header" onclick="toggleAccordion()">
           <span class="accordion-title"
@@ -427,7 +445,7 @@
               rows="5"
             ></textarea>
           </div>
-          <div class="controls" style="margin-top: 12px">
+          <div class="controls" style="margin-top: 8px">
             <button
               id="parseButton"
               class="button primary"
@@ -486,7 +504,7 @@
             Next
           </button>
         </div>
-        <div class="controls" style="margin-top: 8px">
+        <div class="controls" style="margin-top: 6px">
           <button
             id="replaceButton"
             class="button success"
@@ -602,6 +620,9 @@
           const trimmed = line.trim();
           if (!trimmed) continue;
 
+          // Skip lines without "=" (comments, sections, etc.)
+          if (!trimmed.includes("=")) continue;
+
           // Parse TOML-style syntax: "before" = "after"
           const match = trimmed.match(/^"([^"]+)"\s*=\s*"([^"]+)"$/);
           if (match) {
@@ -610,10 +631,8 @@
               after: match[2],
               id: `rule_${rules.length}`,
             });
-          } else {
-            showMessage(`Invalid syntax in line: ${trimmed}`, "error");
-            return;
           }
+          // Silently skip invalid lines instead of showing error
         }
 
         if (rules.length === 0) {
@@ -718,35 +737,59 @@
       function replaceCurrentAll() {
         const rule = rules[currentIndex];
         const button = document.getElementById("replaceButton");
+        const highlightToggle = document.getElementById("highlightToggle");
 
         button.disabled = true;
         button.innerHTML = '<span class="spinner"></span>Replacing...';
 
-        google.script.run
-          .withSuccessHandler(function (response) {
-            if (response.success) {
-              processedRules.add(currentIndex);
-              showMessage(
-                `Replaced ${response.count} occurrence(s)`,
-                "success",
-              );
+        // First, remove highlights if they exist
+        if (highlightToggle.checked) {
+          google.script.run
+            .withSuccessHandler(function (removeResponse) {
+              // After removing highlights, proceed with replacement
+              performReplacement();
+            })
+            .withFailureHandler(function (error) {
+              // If highlight removal fails, still try to replace
+              console.warn("Failed to remove highlights:", error);
+              performReplacement();
+            })
+            .removeHighlightForText(rule.before);
 
-              if (currentIndex < rules.length - 1) {
-                setTimeout(() => nextRule(), 1000);
+          // Reset highlight toggle
+          highlightToggle.checked = false;
+        } else {
+          // No highlights to remove, proceed directly with replacement
+          performReplacement();
+        }
+
+        function performReplacement() {
+          google.script.run
+            .withSuccessHandler(function (response) {
+              if (response.success) {
+                processedRules.add(currentIndex);
+                showMessage(
+                  `Replaced ${response.count} occurrence(s)`,
+                  "success",
+                );
+
+                if (currentIndex < rules.length - 1) {
+                  setTimeout(() => nextRule(), 1000);
+                } else {
+                  showMessage("All rules processed!", "info");
+                }
               } else {
-                showMessage("All rules processed!", "info");
+                showMessage(response.message, "error");
               }
-            } else {
-              showMessage(response.message, "error");
-            }
-            updateNavigationButtons();
-          })
-          .withFailureHandler(function (error) {
-            showMessage("Failed to replace: " + error, "error");
-            button.disabled = false;
-            button.textContent = "Replace";
-          })
-          .searchAndReplace(rule.before, rule.after);
+              updateNavigationButtons();
+            })
+            .withFailureHandler(function (error) {
+              showMessage("Failed to replace: " + error, "error");
+              button.disabled = false;
+              button.textContent = "Replace";
+            })
+            .searchAndReplace(rule.before, rule.after);
+        }
       }
 
       function editRule(index) {
@@ -798,6 +841,83 @@
         setTimeout(function () {
           messageContainer.innerHTML = "";
         }, 5000);
+      }
+
+      function copyAllDocumentText() {
+        const button = document.getElementById("yankAllButton");
+
+        // Disable button during operation
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner"></span>Copying...';
+
+        google.script.run
+          .withSuccessHandler(function (response) {
+            if (response.success) {
+              // Copy text to clipboard
+              navigator.clipboard
+                .writeText(response.content)
+                .then(function () {
+                  showMessage(
+                    `Copied ${response.wordCount} words to clipboard`,
+                    "success",
+                  );
+                })
+                .catch(function (err) {
+                  // Fallback: show text in a dialog for manual copy
+                  showMessage(
+                    `Failed to copy automatically. Text has ${response.wordCount} words.`,
+                    "info",
+                  );
+                });
+            } else {
+              showMessage(response.message, "error");
+            }
+            button.disabled = false;
+            button.textContent = "Yank All";
+          })
+          .withFailureHandler(function (error) {
+            showMessage("Failed to get document text: " + error, "error");
+            button.disabled = false;
+            button.textContent = "Yank All";
+          })
+          .getDocumentContent();
+      }
+
+      function showInstructions() {
+        const instructions = `
+📋 Google Docs Search & Replace Instructions
+
+🚀 Quick Start:
+1. Enter search/replace rules using TOML format:
+   "old text" = "new text"
+   "typo" = "correct spelling"
+
+2. Click "Parse Rules" to load your rules
+3. Use Previous/Next to navigate through rules
+4. Click "Replace" to apply or "Skip" to move on
+
+✨ Features:
+• Yank All - Copy entire document to clipboard
+• Highlight Toggle - Preview search terms before replacing
+• Edit/Delete - Modify rules after parsing
+• Batch Processing - Process multiple rules automatically
+
+💡 Tips:
+• Use Ctrl+Enter to quickly parse rules
+• Toggle highlights to see what will be replaced
+• Rules are processed in the order you enter them
+• The counter shows your progress through all rules
+
+🔧 TOML Format Examples:
+"capitalize" = "Capitalize"
+"colour" = "color"
+"grey" = "gray"
+"centre" = "center"
+
+Ready to improve your document! 🎯
+        `;
+
+        alert(instructions.trim());
       }
 
       // Allow Ctrl+Enter to parse rules
