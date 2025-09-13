@@ -27,6 +27,54 @@
         gap: 16px;
       }
 
+      /* Accordion styles */
+      .accordion {
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+
+      .accordion-header {
+        background-color: #f8fafc;
+        padding: 12px 16px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+      }
+
+      .accordion-header:hover {
+        background-color: #f1f5f9;
+      }
+
+      .accordion-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: #0f172a;
+      }
+
+      .accordion-icon {
+        font-size: 12px;
+        color: #64748b;
+        transition: transform 0.2s ease;
+        display: inline-block;
+      }
+
+      .accordion-content {
+        padding: 16px;
+        display: none;
+      }
+
+      .accordion.active .accordion-content {
+        display: block;
+      }
+
+      .accordion.active .accordion-icon {
+        transform: rotate(90deg);
+      }
+
       /* shadcn-style textarea */
       .input-group {
         display: flex;
@@ -51,7 +99,9 @@
         background-color: #ffffff;
         border: 1px solid #e2e8f0;
         border-radius: 6px;
-        transition: all 0.2s ease;
+        transition:
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
         outline: none;
         resize: vertical;
       }
@@ -302,34 +352,47 @@
   </head>
   <body>
     <div class="container">
-      <div class="input-group">
-        <label class="label" for="rulesInput"
-          >Search & Replace Rules (TOML format)</label
-        >
-        <textarea
-          id="rulesInput"
-          class="textarea"
-          placeholder='"search text" = "replace text"&#10;"another search" = "another replace"'
-          rows="5"
-        ></textarea>
+      <div class="accordion active" id="rulesAccordion">
+        <div class="accordion-header" onclick="toggleAccordion()">
+          <span class="accordion-title"
+            >Search & Replace Rules (TOML format)</span
+          >
+          <span class="accordion-icon">▶</span>
+        </div>
+        <div class="accordion-content">
+          <div class="input-group">
+            <textarea
+              id="rulesInput"
+              class="textarea"
+              placeholder='"search text" = "replace text"&#10;"another search" = "another replace"'
+              rows="5"
+            ></textarea>
+          </div>
+          <div class="controls" style="margin-top: 12px">
+            <button
+              id="parseButton"
+              class="button primary"
+              onclick="parseRules()"
+            >
+              Parse Rules
+            </button>
+            <button
+              id="clearButton"
+              class="button secondary"
+              onclick="clearRules()"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
       </div>
 
-      <div class="controls">
-        <button id="parseButton" class="button primary" onclick="parseRules()">
-          Parse Rules
-        </button>
-        <button
-          id="clearButton"
-          class="button secondary"
-          onclick="clearRules()"
-        >
-          Clear
-        </button>
-      </div>
-
-      <div id="ruleListContainer" style="display: none">
-        <div class="input-group">
-          <label class="label">Parsed Rules</label>
+      <div id="ruleListContainer" class="accordion" style="display: none">
+        <div class="accordion-header" onclick="toggleRulesAccordion()">
+          <span class="accordion-title">Parsed Rules</span>
+          <span class="accordion-icon" id="rulesAccordionIcon">▶</span>
+        </div>
+        <div class="accordion-content">
           <div id="ruleList" class="rule-list"></div>
         </div>
       </div>
@@ -351,31 +414,35 @@
         </div>
       </div>
 
-      <div id="navigationControls" class="controls" style="display: none">
-        <button
-          id="prevButton"
-          class="button secondary"
-          onclick="previousRule()"
-        >
-          Previous
-        </button>
-        <button
-          id="replaceButton"
-          class="button success"
-          onclick="replaceCurrentAll()"
-        >
-          Replace All
-        </button>
-        <button
-          id="skipButton"
-          class="button secondary"
-          onclick="skipCurrent()"
-        >
-          Skip
-        </button>
-        <button id="nextButton" class="button secondary" onclick="nextRule()">
-          Next
-        </button>
+      <div id="navigationControls" style="display: none">
+        <div class="controls">
+          <button
+            id="prevButton"
+            class="button secondary"
+            onclick="previousRule()"
+          >
+            Previous
+          </button>
+          <button id="nextButton" class="button secondary" onclick="nextRule()">
+            Next
+          </button>
+        </div>
+        <div class="controls" style="margin-top: 8px">
+          <button
+            id="replaceButton"
+            class="button success"
+            onclick="replaceCurrentAll()"
+          >
+            Replace
+          </button>
+          <button
+            id="skipButton"
+            class="button secondary"
+            onclick="skipCurrent()"
+          >
+            Skip
+          </button>
+        </div>
       </div>
 
       <div id="messageContainer"></div>
@@ -385,6 +452,16 @@
       let rules = [];
       let currentIndex = 0;
       let processedRules = new Set();
+
+      function toggleAccordion() {
+        const accordion = document.getElementById("rulesAccordion");
+        accordion.classList.toggle("active");
+      }
+
+      function toggleRulesAccordion() {
+        const container = document.getElementById("ruleListContainer");
+        container.classList.toggle("active");
+      }
 
       function parseRules() {
         const input = document.getElementById("rulesInput");
@@ -454,8 +531,9 @@
           .join("");
 
         container.style.display = "block";
+        container.classList.add("active");
         document.getElementById("navigationControls").style.display =
-          rules.length > 0 ? "flex" : "none";
+          rules.length > 0 ? "block" : "none";
       }
 
       function displayCurrentRule() {
@@ -482,10 +560,9 @@
           processedRules.has(currentIndex);
 
         if (processedRules.has(currentIndex)) {
-          document.getElementById("replaceButton").textContent =
-            "Already Replaced";
+          document.getElementById("replaceButton").textContent = "Replaced";
         } else {
-          document.getElementById("replaceButton").textContent = "Replace All";
+          document.getElementById("replaceButton").textContent = "Replace";
         }
       }
 
@@ -541,7 +618,7 @@
           .withFailureHandler(function (error) {
             showMessage("Failed to replace: " + error, "error");
             button.disabled = false;
-            button.textContent = "Replace All";
+            button.textContent = "Replace";
           })
           .searchAndReplace(rule.before, rule.after);
       }
