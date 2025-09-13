@@ -27,7 +27,7 @@
         gap: 16px;
       }
 
-      /* shadcn-style input */
+      /* shadcn-style textarea */
       .input-group {
         display: flex;
         flex-direction: column;
@@ -40,11 +40,12 @@
         color: #0f172a;
       }
 
-      .input {
+      .textarea {
         width: 100%;
-        height: 40px;
+        min-height: 120px;
         padding: 8px 12px;
         font-size: 14px;
+        font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
         line-height: 1.5;
         color: #0f172a;
         background-color: #ffffff;
@@ -52,24 +53,96 @@
         border-radius: 6px;
         transition: all 0.2s ease;
         outline: none;
+        resize: vertical;
       }
 
-      .input:focus {
+      .textarea:focus {
         border-color: #3b82f6;
         box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
       }
 
-      .input:disabled {
+      .textarea:disabled {
         background-color: #f8fafc;
         color: #94a3b8;
         cursor: not-allowed;
       }
 
-      .input::placeholder {
-        color: #94a3b8;
+      /* Current replacement display */
+      .replacement-card {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 16px;
+        display: none;
       }
 
-      /* shadcn-style button */
+      .replacement-card.active {
+        display: block;
+      }
+
+      .replacement-header {
+        font-size: 12px;
+        font-weight: 600;
+        color: #64748b;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .replacement-counter {
+        background-color: #e2e8f0;
+        color: #475569;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+      }
+
+      .replacement-content {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .replacement-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .replacement-label {
+        font-size: 12px;
+        color: #64748b;
+        font-weight: 500;
+      }
+
+      .replacement-text {
+        font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+        font-size: 14px;
+        background-color: #ffffff;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+        word-break: break-all;
+      }
+
+      .replacement-text.before {
+        background-color: #fee2e2;
+        border-color: #fecaca;
+      }
+
+      .replacement-text.after {
+        background-color: #dcfce7;
+        border-color: #bbf7d0;
+      }
+
+      /* Control buttons */
+      .controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
       .button {
         display: inline-flex;
         align-items: center;
@@ -77,18 +150,51 @@
         white-space: nowrap;
         font-size: 14px;
         font-weight: 500;
-        height: 40px;
+        height: 36px;
         padding: 8px 16px;
         border-radius: 6px;
         border: none;
         cursor: pointer;
         transition: all 0.2s ease;
+        flex: 1;
+        min-width: 80px;
+      }
+
+      .button.primary {
         background-color: #0f172a;
         color: #ffffff;
       }
 
-      .button:hover {
+      .button.primary:hover {
         background-color: #1e293b;
+      }
+
+      .button.secondary {
+        background-color: #ffffff;
+        color: #0f172a;
+        border: 1px solid #e2e8f0;
+      }
+
+      .button.secondary:hover {
+        background-color: #f8fafc;
+      }
+
+      .button.success {
+        background-color: #16a34a;
+        color: #ffffff;
+      }
+
+      .button.success:hover {
+        background-color: #15803d;
+      }
+
+      .button.danger {
+        background-color: #dc2626;
+        color: #ffffff;
+      }
+
+      .button.danger:hover {
+        background-color: #b91c1c;
       }
 
       .button:active {
@@ -105,7 +211,6 @@
         padding: 12px;
         border-radius: 6px;
         font-size: 14px;
-        margin-top: 8px;
       }
 
       .message.success {
@@ -118,6 +223,12 @@
         background-color: #fee2e2;
         color: #991b1b;
         border: 1px solid #fecaca;
+      }
+
+      .message.info {
+        background-color: #dbeafe;
+        color: #1e40af;
+        border: 1px solid #bfdbfe;
       }
 
       /* Loading spinner */
@@ -137,94 +248,361 @@
           transform: rotate(360deg);
         }
       }
+
+      /* Rule list */
+      .rule-list {
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background-color: #f8fafc;
+      }
+
+      .rule-item {
+        padding: 8px 12px;
+        border-bottom: 1px solid #e2e8f0;
+        font-size: 13px;
+        font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .rule-item:last-child {
+        border-bottom: none;
+      }
+
+      .rule-item:hover {
+        background-color: #f1f5f9;
+      }
+
+      .rule-actions {
+        display: flex;
+        gap: 4px;
+      }
+
+      .icon-button {
+        width: 24px;
+        height: 24px;
+        padding: 4px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.2s ease;
+      }
+
+      .icon-button:hover {
+        background-color: #e2e8f0;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="input-group">
-        <label class="label" for="textInput">Enter your text</label>
-        <input
-          type="text"
-          id="textInput"
-          class="input"
-          placeholder="Type something..."
-          autocomplete="off"
-        />
+        <label class="label" for="rulesInput"
+          >Search & Replace Rules (TOML format)</label
+        >
+        <textarea
+          id="rulesInput"
+          class="textarea"
+          placeholder='"search text" = "replace text"&#10;"another search" = "another replace"'
+          rows="5"
+        ></textarea>
       </div>
 
-      <button id="submitButton" class="button" onclick="handleSubmit()">
-        Submit
-      </button>
+      <div class="controls">
+        <button id="parseButton" class="button primary" onclick="parseRules()">
+          Parse Rules
+        </button>
+        <button
+          id="clearButton"
+          class="button secondary"
+          onclick="clearRules()"
+        >
+          Clear
+        </button>
+      </div>
+
+      <div id="ruleListContainer" style="display: none">
+        <div class="input-group">
+          <label class="label">Parsed Rules</label>
+          <div id="ruleList" class="rule-list"></div>
+        </div>
+      </div>
+
+      <div id="replacementCard" class="replacement-card">
+        <div class="replacement-header">
+          <span>Current Replacement</span>
+          <span id="replacementCounter" class="replacement-counter">1 / 1</span>
+        </div>
+        <div class="replacement-content">
+          <div class="replacement-item">
+            <span class="replacement-label">Search for:</span>
+            <div id="beforeText" class="replacement-text before"></div>
+          </div>
+          <div class="replacement-item">
+            <span class="replacement-label">Replace with:</span>
+            <div id="afterText" class="replacement-text after"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="navigationControls" class="controls" style="display: none">
+        <button
+          id="prevButton"
+          class="button secondary"
+          onclick="previousRule()"
+        >
+          Previous
+        </button>
+        <button
+          id="replaceButton"
+          class="button success"
+          onclick="replaceCurrentAll()"
+        >
+          Replace All
+        </button>
+        <button
+          id="skipButton"
+          class="button secondary"
+          onclick="skipCurrent()"
+        >
+          Skip
+        </button>
+        <button id="nextButton" class="button secondary" onclick="nextRule()">
+          Next
+        </button>
+      </div>
 
       <div id="messageContainer"></div>
     </div>
 
     <script>
-      function handleSubmit() {
-        const input = document.getElementById("textInput");
-        const button = document.getElementById("submitButton");
-        const messageContainer = document.getElementById("messageContainer");
+      let rules = [];
+      let currentIndex = 0;
+      let processedRules = new Set();
+
+      function parseRules() {
+        const input = document.getElementById("rulesInput");
         const text = input.value.trim();
 
         if (!text) {
-          showMessage("Please enter some text", "error");
+          showMessage("Please enter some rules", "error");
           return;
         }
 
-        // Disable input and show loading state
-        input.disabled = true;
-        button.disabled = true;
-        button.innerHTML = '<span class="spinner"></span>Processing...';
-        messageContainer.innerHTML = "";
+        rules = [];
+        const lines = text.split("\n");
 
-        // Call the server-side function
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          // Parse TOML-style syntax: "before" = "after"
+          const match = trimmed.match(/^"([^"]+)"\s*=\s*"([^"]+)"$/);
+          if (match) {
+            rules.push({
+              before: match[1],
+              after: match[2],
+              id: `rule_${rules.length}`,
+            });
+          } else {
+            showMessage(`Invalid syntax in line: ${trimmed}`, "error");
+            return;
+          }
+        }
+
+        if (rules.length === 0) {
+          showMessage("No valid rules found", "error");
+          return;
+        }
+
+        currentIndex = 0;
+        processedRules.clear();
+        displayRuleList();
+        displayCurrentRule();
+        showMessage(
+          `Parsed ${rules.length} rule${rules.length > 1 ? "s" : ""}`,
+          "success",
+        );
+      }
+
+      function displayRuleList() {
+        const container = document.getElementById("ruleListContainer");
+        const list = document.getElementById("ruleList");
+
+        list.innerHTML = rules
+          .map(
+            (rule, index) => `
+          <div class="rule-item" data-index="${index}">
+            <span>"${rule.before}" = "${rule.after}"</span>
+            <div class="rule-actions">
+              <button class="icon-button" onclick="editRule(${index})" title="Edit">
+                ✏️
+              </button>
+              <button class="icon-button" onclick="deleteRule(${index})" title="Delete">
+                🗑️
+              </button>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+
+        container.style.display = "block";
+        document.getElementById("navigationControls").style.display =
+          rules.length > 0 ? "flex" : "none";
+      }
+
+      function displayCurrentRule() {
+        if (rules.length === 0) {
+          document.getElementById("replacementCard").classList.remove("active");
+          return;
+        }
+
+        const rule = rules[currentIndex];
+        document.getElementById("beforeText").textContent = rule.before;
+        document.getElementById("afterText").textContent = rule.after;
+        document.getElementById("replacementCounter").textContent =
+          `${currentIndex + 1} / ${rules.length}`;
+        document.getElementById("replacementCard").classList.add("active");
+
+        updateNavigationButtons();
+      }
+
+      function updateNavigationButtons() {
+        document.getElementById("prevButton").disabled = currentIndex === 0;
+        document.getElementById("nextButton").disabled =
+          currentIndex === rules.length - 1;
+        document.getElementById("replaceButton").disabled =
+          processedRules.has(currentIndex);
+
+        if (processedRules.has(currentIndex)) {
+          document.getElementById("replaceButton").textContent =
+            "Already Replaced";
+        } else {
+          document.getElementById("replaceButton").textContent = "Replace All";
+        }
+      }
+
+      function previousRule() {
+        if (currentIndex > 0) {
+          currentIndex--;
+          displayCurrentRule();
+        }
+      }
+
+      function nextRule() {
+        if (currentIndex < rules.length - 1) {
+          currentIndex++;
+          displayCurrentRule();
+        }
+      }
+
+      function skipCurrent() {
+        processedRules.add(currentIndex);
+        if (currentIndex < rules.length - 1) {
+          nextRule();
+        } else {
+          showMessage("All rules processed!", "info");
+        }
+      }
+
+      function replaceCurrentAll() {
+        const rule = rules[currentIndex];
+        const button = document.getElementById("replaceButton");
+
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner"></span>Replacing...';
+
         google.script.run
           .withSuccessHandler(function (response) {
             if (response.success) {
-              showMessage(response.message, "success");
-              input.value = ""; // Clear input on success
+              processedRules.add(currentIndex);
+              showMessage(
+                `Replaced ${response.count} occurrence(s)`,
+                "success",
+              );
+
+              if (currentIndex < rules.length - 1) {
+                setTimeout(() => nextRule(), 1000);
+              } else {
+                showMessage("All rules processed!", "info");
+              }
             } else {
               showMessage(response.message, "error");
             }
+            updateNavigationButtons();
           })
           .withFailureHandler(function (error) {
-            showMessage("Failed to process text: " + error, "error");
+            showMessage("Failed to replace: " + error, "error");
+            button.disabled = false;
+            button.textContent = "Replace All";
           })
-          .withUserObject(this)
-          .processText(text);
+          .searchAndReplace(rule.before, rule.after);
+      }
 
-        // Re-enable after a delay (will be overridden by success/failure handlers)
-        setTimeout(function () {
-          input.disabled = false;
-          button.disabled = false;
-          button.textContent = "Submit";
-        }, 2000);
+      function editRule(index) {
+        const rule = rules[index];
+        const newBefore = prompt("Edit search text:", rule.before);
+        if (newBefore === null) return;
+
+        const newAfter = prompt("Edit replace text:", rule.after);
+        if (newAfter === null) return;
+
+        rules[index] = {
+          before: newBefore,
+          after: newAfter,
+          id: rule.id,
+        };
+
+        displayRuleList();
+        if (currentIndex === index) {
+          displayCurrentRule();
+        }
+      }
+
+      function deleteRule(index) {
+        if (confirm("Delete this rule?")) {
+          rules.splice(index, 1);
+          if (currentIndex >= rules.length && currentIndex > 0) {
+            currentIndex--;
+          }
+          displayRuleList();
+          displayCurrentRule();
+        }
+      }
+
+      function clearRules() {
+        document.getElementById("rulesInput").value = "";
+        rules = [];
+        currentIndex = 0;
+        processedRules.clear();
+        document.getElementById("ruleListContainer").style.display = "none";
+        document.getElementById("navigationControls").style.display = "none";
+        document.getElementById("replacementCard").classList.remove("active");
+        document.getElementById("messageContainer").innerHTML = "";
       }
 
       function showMessage(text, type) {
         const messageContainer = document.getElementById("messageContainer");
-        const input = document.getElementById("textInput");
-        const button = document.getElementById("submitButton");
-
         messageContainer.innerHTML = `<div class="message ${type}">${text}</div>`;
 
-        // Re-enable inputs
-        input.disabled = false;
-        button.disabled = false;
-        button.textContent = "Submit";
-
-        // Auto-hide message after 5 seconds
         setTimeout(function () {
           messageContainer.innerHTML = "";
         }, 5000);
       }
 
-      // Allow Enter key to submit
+      // Allow Ctrl+Enter to parse rules
       document
-        .getElementById("textInput")
-        .addEventListener("keypress", function (e) {
-          if (e.key === "Enter") {
-            handleSubmit();
+        .getElementById("rulesInput")
+        .addEventListener("keydown", function (e) {
+          if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+            parseRules();
           }
         });
     </script>
