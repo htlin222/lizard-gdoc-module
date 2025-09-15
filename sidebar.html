@@ -474,6 +474,49 @@
         </div>
       </div>
 
+      <div id="editRuleContainer" class="accordion" style="display: none">
+        <div class="accordion-header" onclick="toggleEditAccordion()">
+          <span class="accordion-title">Edit Rule</span>
+          <span class="accordion-icon" id="editAccordionIcon">▶</span>
+        </div>
+        <div class="accordion-content">
+          <div class="input-group">
+            <label class="label">Search text:</label>
+            <textarea
+              id="editSearchInput"
+              class="textarea"
+              placeholder="Enter search text"
+              rows="2"
+            ></textarea>
+          </div>
+          <div class="input-group" style="margin-top: 8px">
+            <label class="label">Replace text:</label>
+            <textarea
+              id="editReplaceInput"
+              class="textarea"
+              placeholder="Enter replace text"
+              rows="2"
+            ></textarea>
+          </div>
+          <div class="controls" style="margin-top: 8px">
+            <button
+              id="saveEditButton"
+              class="button success"
+              onclick="saveEditRule()"
+            >
+              Save
+            </button>
+            <button
+              id="cancelEditButton"
+              class="button secondary"
+              onclick="cancelEditRule()"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div id="replacementCard" class="replacement-card">
         <div class="replacement-header">
           <span>Current Replacement</span>
@@ -540,6 +583,7 @@
       let rules = [];
       let currentIndex = 0;
       let processedRules = new Set();
+      let editingIndex = -1;
 
       function toggleAccordion() {
         const accordion = document.getElementById("rulesAccordion");
@@ -548,6 +592,11 @@
 
       function toggleRulesAccordion() {
         const container = document.getElementById("ruleListContainer");
+        container.classList.toggle("active");
+      }
+
+      function toggleEditAccordion() {
+        const container = document.getElementById("editRuleContainer");
         container.classList.toggle("active");
       }
 
@@ -794,22 +843,65 @@
 
       function editRule(index) {
         const rule = rules[index];
-        const newBefore = prompt("Edit search text:", rule.before);
-        if (newBefore === null) return;
+        editingIndex = index;
 
-        const newAfter = prompt("Edit replace text:", rule.after);
-        if (newAfter === null) return;
+        // Populate the edit form
+        document.getElementById("editSearchInput").value = rule.before;
+        document.getElementById("editReplaceInput").value = rule.after;
 
-        rules[index] = {
+        // Show and expand the edit accordion
+        const editContainer = document.getElementById("editRuleContainer");
+        editContainer.style.display = "block";
+        editContainer.classList.add("active");
+
+        // Focus on the search input
+        setTimeout(() => {
+          document.getElementById("editSearchInput").focus();
+        }, 100);
+      }
+
+      function saveEditRule() {
+        if (editingIndex === -1) return;
+
+        const newBefore = document
+          .getElementById("editSearchInput")
+          .value.trim();
+        const newAfter = document
+          .getElementById("editReplaceInput")
+          .value.trim();
+
+        if (!newBefore) {
+          showMessage("Search text cannot be empty", "error");
+          return;
+        }
+
+        const rule = rules[editingIndex];
+        rules[editingIndex] = {
           before: newBefore,
           after: newAfter,
           id: rule.id,
         };
 
         displayRuleList();
-        if (currentIndex === index) {
+        if (currentIndex === editingIndex) {
           displayCurrentRule();
         }
+
+        cancelEditRule();
+        showMessage("Rule updated successfully", "success");
+      }
+
+      function cancelEditRule() {
+        editingIndex = -1;
+
+        // Clear the edit form
+        document.getElementById("editSearchInput").value = "";
+        document.getElementById("editReplaceInput").value = "";
+
+        // Hide the edit accordion
+        const editContainer = document.getElementById("editRuleContainer");
+        editContainer.classList.remove("active");
+        editContainer.style.display = "none";
       }
 
       function deleteRule(index) {
