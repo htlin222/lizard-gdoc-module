@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top" />
+    <style>
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+          "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+          sans-serif;
+        margin: 0;
+        padding: 20px;
+        line-height: 1.6;
+        color: #0f172a;
+        background-color: #ffffff;
+      }
+
+      h1 {
+        color: #0f172a;
+        margin-top: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 20px;
+      }
+
+      h2 {
+        color: #1e293b;
+        font-size: 16px;
+        margin-top: 24px;
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      ol,
+      ul {
+        margin: 12px 0;
+        padding-left: 20px;
+      }
+
+      li {
+        margin: 6px 0;
+      }
+
+      code {
+        background-color: #f1f5f9;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: "SF Mono", Monaco, "Cascadia Code", monospace;
+        font-size: 13px;
+      }
+
+      .examples {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 12px;
+        margin: 12px 0;
+      }
+
+      .examples code {
+        display: block;
+        margin: 4px 0;
+        background-color: #ffffff;
+        padding: 4px 8px;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 24px;
+        padding-top: 16px;
+        border-top: 1px solid #e2e8f0;
+        color: #64748b;
+        font-size: 14px;
+      }
+
+      .close-btn {
+        background-color: #0f172a;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 16px;
+        width: 100%;
+      }
+
+      .close-btn:hover {
+        background-color: #1e293b;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>📋 Search & Replace Instructions</h1>
+
+    <h2>💡 Prompts</h2>
+    <p>
+      Based on the given context and instructions, create search/replace rules
+      in TOML format. Each rule should follow this structure: <br />
+      "old text" = "new text"<br />
+      "typo" = "correct spelling" <br />
+      All the text revisions should be presented as a list inside a code block.
+    </p>
+    <h2>🚀 Quick Start</h2>
+    <ol>
+      <li>
+        Enter search/replace rules using TOML format:<br />
+        <code>"old text" = "new text"</code><br />
+        <code>"typo" = "correct spelling"</code>
+      </li>
+      <li>Click <strong>"Parse Rules"</strong> to load your rules</li>
+      <li>Use <strong>Previous/Next</strong> to navigate through rules</li>
+      <li>
+        Click <strong>"Replace"</strong> to apply or <strong>"Skip"</strong> to
+        move on
+      </li>
+    </ol>
+
+    <h2>✨ Features</h2>
+    <ul>
+      <li><strong>Yank All</strong> - Copy entire document to clipboard</li>
+      <li>
+        <strong>Highlight Toggle</strong> - Preview search terms before
+        replacing
+      </li>
+      <li><strong>Edit/Delete</strong> - Modify rules after parsing</li>
+      <li>
+        <strong>Batch Processing</strong> - Process multiple rules automatically
+      </li>
+    </ul>
+
+    <h2>💡 Tips</h2>
+    <ul>
+      <li>Use <code>Ctrl+Enter</code> to quickly parse rules</li>
+      <li>Toggle highlights to see what will be replaced</li>
+      <li>Rules are processed in the order you enter them</li>
+      <li>The counter shows your progress through all rules</li>
+    </ul>
+
+    <h2>🔧 TOML Format Examples</h2>
+    <div class="examples">
+      <code>"capitalize" = "Capitalize"</code>
+      <code>"colour" = "color"</code>
+      <code>"grey" = "gray"</code>
+      <code>"centre" = "center"</code>
+    </div>
+
+    <div class="footer">Ready to improve your document! 🎯</div>
+
+    <button class="close-btn" onclick="google.script.host.close()">
+      Got it!
+    </button>
+  </body>
+</html>

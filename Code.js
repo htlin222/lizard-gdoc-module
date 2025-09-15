@@ -304,3 +304,15 @@ function removeHighlightForText(searchText) {
 		};
 	}
 }
+
+/**
+ * Shows the instruction dialog with usage guidelines.
+ * @see src/ui.js
+ */
+function showInstructionDialog() {
+	const html = HtmlService.createHtmlOutputFromFile("instruction-dialog")
+		.setWidth(500)
+		.setHeight(600);
+
+	DocumentApp.getUi().showModalDialog(html, "Instructions");
+}

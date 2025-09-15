@@ -884,40 +884,7 @@
       }
 
       function showInstructions() {
-        const instructions = `
-📋 Google Docs Search & Replace Instructions
-
-🚀 Quick Start:
-1. Enter search/replace rules using TOML format:
-   "old text" = "new text"
-   "typo" = "correct spelling"
-
-2. Click "Parse Rules" to load your rules
-3. Use Previous/Next to navigate through rules
-4. Click "Replace" to apply or "Skip" to move on
-
-✨ Features:
-• Yank All - Copy entire document to clipboard
-• Highlight Toggle - Preview search terms before replacing
-• Edit/Delete - Modify rules after parsing
-• Batch Processing - Process multiple rules automatically
-
-💡 Tips:
-• Use Ctrl+Enter to quickly parse rules
-• Toggle highlights to see what will be replaced
-• Rules are processed in the order you enter them
-• The counter shows your progress through all rules
-
-🔧 TOML Format Examples:
-"capitalize" = "Capitalize"
-"colour" = "color"
-"grey" = "gray"
-"centre" = "center"
-
-Ready to improve your document! 🎯
-        `;
-
-        alert(instructions.trim());
+        google.script.run.showInstructionDialog();
       }
 
       // Allow Ctrl+Enter to parse rules
