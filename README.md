@@ -1,3 +1,7 @@
+![GitHub stars](https://img.shields.io/github/stars/htlin222/lizard-gdoc-module?style=flat-square)
+![Last commit](https://img.shields.io/github/last-commit/htlin222/lizard-gdoc-module?style=flat-square)
+![License](https://img.shields.io/github/license/htlin222/lizard-gdoc-module?style=flat-square)
+
 # Google Docs Search & Replace Add-on
 
 A powerful Google Docs add-on that provides batch search and replace functionality with TOML-format rules, text highlighting, and an intuitive sidebar interface.
